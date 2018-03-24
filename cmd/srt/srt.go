@@ -6,6 +6,7 @@ import (
 	"os"
 
 	"h12.me/srt"
+	"strings"
 )
 
 func main() {
@@ -19,12 +20,26 @@ func main() {
 	}
 	defer file.Close()
 	scanner := srt.NewScanner(file)
-	previousText := ""
+	last := ""
 	for scanner.Scan() {
-		text := scanner.Record().Text
-		if text != previousText {
-			fmt.Println(text)
-			previousText = text
+		this := strings.TrimSpace(scanner.Record().Text)
+		a, b := cleanAdjacent(last, this)
+		if a != "" {
+			fmt.Println(a)
+		}
+		last = b
+	}
+}
+
+func cleanAdjacent(a, b string) (string, string) {
+	n := len(a)
+	if n > len(b) {
+		n = len(b)
+	}
+	for i := n; i >= 1; i-- {
+		if a[len(a)-i:] == b[0:i] {
+			return a[:len(a)-i], b[i:]
 		}
 	}
+	return a, b
 }
