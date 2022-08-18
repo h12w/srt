@@ -5,8 +5,9 @@ import (
 	"log"
 	"os"
 
-	"h12.me/srt"
 	"strings"
+
+	"h12.io/srt"
 )
 
 func main() {
